@@ -1,0 +1,51 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright Chromium (bundled)
+        run: |
+          $env:PLAYWRIGHT_BROWSERS_PATH = "$PWD\pw-browsers"
+          python -m playwright install chromium
+
+      - name: Build EXE with PyInstaller
+        run: >
+          pyinstaller --noconfirm --onedir --windowed
+          --name PagePilot
+          --collect-all playwright
+          --add-data "pagepilot/ui;pagepilot/ui"
+          --add-data "pw-browsers;pw-browsers"
+          main.py
+
+      - name: Zip for release
+        run: Compress-Archive -Path dist\PagePilot -DestinationPath PagePilot-windows.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PagePilot-windows
+          path: PagePilot-windows.zip
+
+      - name: Create release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: PagePilot-windows.zip

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+  <div class="card-head">
+    <div>
+      <div class="card-title">◈ ACCOUNT HUB <span class="badge b-cyan">FLEET MATRIX</span></div>
+      <div class="card-sub"><span class="dot dot-green"></span> SYSTEM ONLINE &nbsp;·&nbsp; <span id="fleetPct">100%</span> Operational Fleet</div>
+    </div>
+    <div class="toolbar" style="margin:0">
+      <button class="btn btn-green btn-sm" id="btnCheckLive">◍ Check Live All</button>
+      <button class="btn btn-danger btn-sm" id="btnBulkDelete" disabled>🗑 Delete</button>
+      <button class="btn btn-primary btn-sm" id="btnAddAccount">＋ Add Account</button>
+    </div>
+  </div>
+  <div class="stat-grid" id="statPills">
+    <div class="card stat-card"><div class="stat-label">TOTAL</div><div class="stat-num" id="stTotal">0</div></div>
+    <div class="card stat-card"><div class="stat-label"><span class="dot dot-green"></span> LIVE</div><div class="stat-num" id="stLive">0</div></div>
+    <div class="card stat-card"><div class="stat-label"><span class="dot dot-cyan"></span> LOGGED IN</div><div class="stat-num" id="stLoggedIn">0</div></div>
+    <div class="card stat-card"><div class="stat-label"><span class="dot" style="background:#f59e0b"></span> CHECKPOINT</div><div class="stat-num" id="stCheckpoint">0</div></div>
+    <div class="card stat-card"><div class="stat-label"><span class="dot dot-red"></span> DIE</div><div class="stat-num" id="stDead">0</div></div>
+    <div class="card stat-card"><div class="stat-label">SELECTED</div><div class="stat-num" id="stSelected">0</div></div>
+  </div>
+</div>
+
+<div class="grid-2" style="grid-template-columns:280px 1fr">
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">▤ MANAGER CATEGORY</div>
+      <button class="btn btn-primary btn-sm" id="btnAddCat">＋ Add</button>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <input class="input" id="catSearch" placeholder="Search segments…">
+    </div>
+    <div id="catList"><div class="empty">Loading…</div></div>
+  </div>
+
+  <div class="card">
+    <div class="toolbar">
+      <input class="input" id="qSearch" placeholder="Search username, UID, email…" style="max-width:300px">
+      <select class="input select" id="tagFilter" style="max-width:160px"><option value="">Tags: All</option></select>
+      <span class="spacer"></span>
+    </div>
+    <div class="tabs" id="statusTabs">
+      <button class="tab on" data-st="all">All Status</button>
+      <button class="tab" data-st="live">Live Only</button>
+      <button class="tab" data-st="logged_in">Logged In (<span id="tabLoggedIn">0</span>)</button>
+      <button class="tab" data-st="checkpoint">Checkpoint</button>
+      <button class="tab" data-st="dead">Dead</button>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr>
+          <th><input type="checkbox" id="selAll"></th>
+          <th>STT</th><th>USERNAME</th><th>UID</th><th>DISPLAY NAME</th><th>STATUS</th><th>LAST CHECK</th>
+        </tr></thead>
+        <tbody id="accBody"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="toolbar" style="margin-top:12px;margin-bottom:0">
+      <span class="card-sub" id="pgInfo">Displaying 0 of 0 Accounts</span>
+      <span class="spacer"></span>
+      <select class="input select" id="perPage" style="max-width:130px">
+        <option value="50">50 per page</option>
+        <option value="100" selected>100 per page</option>
+        <option value="200">200 per page</option>
+      </select>
+      <button class="btn btn-ghost btn-sm" id="pgPrev">‹</button>
+      <span class="card-sub" id="pgNum">1 / 1</span>
+      <button class="btn btn-ghost btn-sm" id="pgNext">›</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/accounts.js') }}"></script>
+{% endblock %}

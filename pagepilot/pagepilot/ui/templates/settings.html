@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="card-head">
+    <div>
+      <div class="card-title">Settings</div>
+      <div class="card-sub">Posting defaults, browser, AI captions &amp; safety guards</div>
+    </div>
+    <button class="btn btn-primary btn-sm" id="saveBtn">Save Settings</button>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">POSTING DEFAULTS</div>
+    <div class="card-sub">Human-like pacing between actions</div>
+    <div class="row2" style="margin-top:12px">
+      <div class="field"><label>Min spacing (sec)</label>
+        <input class="input" id="sMin" type="number" min="1" value="3"></div>
+      <div class="field"><label>Max spacing (sec)</label>
+        <input class="input" id="sMax" type="number" min="1" value="10"></div>
+    </div>
+    <div class="field"><label>Switch account after N errors</label>
+      <input class="input" id="sSwitch" type="number" min="1" value="10"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">BROWSER</div>
+    <div class="card-sub">How the automation engine opens Facebook</div>
+    <div class="field" style="margin-top:12px">
+      <label class="check"><input type="checkbox" id="sHeadless" checked>
+        <span>Headless mode (no visible browser window)</span></label>
+      <div class="card-sub">Uncheck for the first login if Facebook shows a checkpoint — you can solve it in the visible window, then re-check.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SAFETY GUARDS</div>
+    <div class="card-sub">Protect accounts from duplicate-content flags</div>
+    <div class="field" style="margin-top:12px">
+      <label class="check"><input type="checkbox" id="sUniq" checked>
+        <span>Video uniquifier — make every upload hash-unique</span></label>
+    </div>
+    <div class="field">
+      <label class="check"><input type="checkbox" id="sDup" checked>
+        <span>Duplicate guard — never repost the same media to a page</span></label>
+    </div>
+    <div class="field"><label>Duplicate window (days)</label>
+      <input class="input" id="sDupDays" type="number" min="1" value="30"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">AI CAPTIONS <span class="badge b-cyan">NEW</span></div>
+    <div class="card-sub">OpenAI-compatible API — key is stored encrypted</div>
+    <div class="field" style="margin-top:12px"><label>Base URL</label>
+      <input class="input" id="sAiBase" placeholder="https://api.openai.com/v1"></div>
+    <div class="field"><label>API Key</label>
+      <input class="input" id="sAiKey" type="password" placeholder="sk-..."></div>
+    <div class="field"><label>Model</label>
+      <input class="input" id="sAiModel" placeholder="gpt-4o-mini"></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

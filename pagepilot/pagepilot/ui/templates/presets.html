@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+.cat-item{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:10px 12px;border-radius:9px;color:var(--muted);cursor:pointer;
+  border:1px solid transparent;margin-bottom:2px;font-size:13px}
+.cat-item:hover{background:#101a30;color:var(--text)}
+.cat-item.on{background:linear-gradient(90deg,#123,#0e1a30);color:var(--text);
+  border-color:#1e3a5f}
+</style>
+<div style="display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start">
+  <div class="card">
+    <div class="card-title">Content Presets</div>
+    <div class="card-sub">Categories &amp; Folders</div>
+    <div id="catList"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title">Presets Library <span class="badge b-cyan" id="presetCount">0</span></div>
+        <div class="card-sub">Spintax templates, media assets &amp; caption pools</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-danger btn-sm" id="delBtn" disabled>Delete</button>
+        <button class="btn btn-primary btn-sm" id="addBtn">+ Add content</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="tabs" id="typeTabs" style="margin-bottom:0">
+        <button class="tab on" data-t="">All</button>
+        <button class="tab" data-t="post">Posts</button>
+        <button class="tab" data-t="reel">Reels</button>
+        <button class="tab" data-t="comment">Comments</button>
+      </div>
+      <div class="spacer"></div>
+      <input class="input" id="search" placeholder="Search content or title..." style="width:240px">
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width:34px"><input type="checkbox" id="selAll"></th>
+            <th>STT</th><th>TITLE</th><th>TYPE</th><th>CONTENT</th>
+            <th>MEDIA</th><th>CATEGORY</th><th>CREATED AT</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/presets.js') }}"></script>
+{% endblock %}

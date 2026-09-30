@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="card-head">
+    <div>
+      <div class="card-title">Comments &amp; Engagement</div>
+      <div class="card-sub">Warm up new accounts &middot; auto-reply to page comments</div>
+    </div>
+    <span class="badge b-green">LIVE</span>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">🔥 ACCOUNT WARM-UP</div>
+    <div class="card-sub">Human-like activity: scroll feed, like posts, watch reels</div>
+    <div class="field" style="margin-top:12px"><label>Accounts</label>
+      <div id="wuAccounts" class="checklist"></div></div>
+    <div class="row2">
+      <div class="field"><label>Minutes per account</label>
+        <input class="input" id="wuMinutes" type="number" min="1" max="60" value="10"></div>
+      <div class="field"><label>&nbsp;</label>
+        <button class="btn btn-primary" id="wuStart" style="width:100%">Start Warm-up</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💬 COMMENT AUTO-REPLY</div>
+    <div class="card-sub">Reply to comments on recent page posts (spintax allowed)</div>
+    <div class="field" style="margin-top:12px"><label>Pages</label>
+      <div id="crPages" class="checklist"></div></div>
+    <div class="field"><label>Reply texts (blank line separates)</label>
+      <textarea class="input" id="crReplies" rows="4"
+        placeholder="{Thanks|Thank you} so much! 🙏&#10;&#10;Glad you loved it! ❤️"></textarea></div>
+    <div class="row2">
+      <div class="field"><label>Max replies per page</label>
+        <input class="input" id="crMax" type="number" min="1" max="50" value="10"></div>
+      <div class="field"><label>&nbsp;</label>
+        <button class="btn btn-primary" id="crStart" style="width:100%">Start Replies</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title">ENGAGEMENT TASKS</div>
+  </div>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>ID</th><th>NAME</th><th>KIND</th><th>STATUS</th>
+      <th>QUEUED</th><th>DONE</th><th>FAILED</th><th>CREATED</th><th></th></tr></thead>
+      <tbody id="taskRows"><tr><td colspan="9" class="empty">No engagement tasks yet.</td></tr></tbody>
+    </table>
+  </div>
+  <div class="card-sub" style="margin-top:8px">Tasks run when the scheduler is ON (topbar Run button).</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/engagement.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="card-head">
+    <div>
+      <div class="card-title">Proxy Management</div>
+      <div class="card-sub">HTTP / SOCKS4 / SOCKS5 fleet &middot; bulk import &middot; per-account assignment</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span class="badge b-cyan">IPInfo.io Engine</span>
+      <button class="btn btn-sm" id="groupsBtn">Proxy Groups <span class="badge b-gray" id="grpCount">0</span></button>
+      <button class="btn btn-danger btn-sm" id="delBtn" disabled>Delete</button>
+      <button class="btn btn-primary btn-sm" id="addBtn">+ Add Proxy</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <input class="input" id="search" placeholder="Search host, IP, proxy..." style="width:240px">
+    <select class="select" id="groupFilter" style="width:180px">
+      <option value="">All Groups</option>
+    </select>
+    <select class="select" id="statusFilter" style="width:150px">
+      <option value="">All Statuses</option>
+      <option value="unknown">Unknown</option>
+      <option value="active">Active</option>
+      <option value="dead">Dead</option>
+    </select>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" id="checkBtn">Check Selected</button>
+  </div>
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width:34px"><input type="checkbox" id="selAll"></th>
+          <th>STT</th><th>PROXY</th><th>IP ADDRESS</th><th>PROFILES</th>
+          <th>PROTOCOL</th><th>TYPE</th><th>GROUP</th><th>LOCATION</th>
+          <th>TIMEZONE</th><th>LATENCY</th><th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/proxies.js') }}"></script>
+{% endblock %}

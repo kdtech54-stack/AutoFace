@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+  <div class="card-head">
+    <div>
+      <div class="card-title">Operations Dashboard <span class="ver">v0.1.0</span> <span class="badge b-green">● LIVE REAL-TIME</span></div>
+      <div class="card-sub" id="opsSub">Accounts: 0 · Proxies: 0 · Queued: 0</div>
+    </div>
+    <div class="seg" id="rangeSeg">
+      <button data-r="today">Today</button>
+      <button data-r="24h">24 Hours</button>
+      <button data-r="7d" class="on">Last 7 Days</button>
+      <button data-r="30d">Last 30 Days</button>
+      <button data-r="1y">Last Year</button>
+      <button data-r="life">Lifetime</button>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="dot dot-cyan"></span> ACTIVITY &amp; PUBLISHING VOLUME (LAST 7 DAYS)</div>
+      <button class="btn btn-ghost btn-sm" onclick="loadActivity()">⟳ Refresh Data</button>
+    </div>
+    <div class="card-sub">Aggregated daily Facebook Reels, Page Posts, and interactions</div>
+    <canvas id="actChart" height="220"></canvas>
+    <div class="legend"><span><i class="dot dot-green"></i> Posts</span><span><i class="dot dot-cyan"></i> Reels</span></div>
+  </div>
+
+  <div class="stat-col">
+    <div class="stat-grid">
+      <div class="card stat-card">
+        <div class="stat-label">ACCOUNT HUB</div>
+        <div class="stat-num" id="stAccounts">0</div>
+        <div class="stat-sub"><span class="ok">● <span id="stLive">0</span> Live</span> &nbsp; <span class="bad">● <span id="stDead">0</span> Dead</span></div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">ACTIONS TODAY</div>
+        <div class="stat-num" id="stActions">0</div>
+        <div class="stat-sub">Lifetime Posts: <b id="stLifetime">0</b></div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">PROXY MESH</div>
+        <div class="stat-num" id="stProxies">0</div>
+        <div class="stat-sub"><span class="ok">● <span id="stProxActive">0</span> Active</span> &nbsp; <span id="stProxPct">100%</span></div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">CONTENT STUDIO</div>
+        <div class="stat-num" id="stPresets">0</div>
+        <div class="stat-sub"><span class="warn">● <span id="stQueued">0</span> Queued</span> &nbsp; Ready</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">▤ SCHEDULED QUEUE <span class="badge b-amber right" id="qBadge">0 queued</span></div>
+      <div class="card-sub">Tasks planned for today and pending execution</div>
+      <div id="queueList" class="empty">No scheduled tasks yet.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title">📊 TOP PAGES <span class="badge b-cyan">7 DAYS</span></div>
+    <button class="btn btn-ghost btn-sm" onclick="loadTopPages()">⟳ Refresh</button>
+  </div>
+  <div class="card-sub">Publishing volume per page — successful reels + posts</div>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>#</th><th>PAGE</th><th>LAST 7 DAYS</th><th>LIFETIME</th><th>FAILED (7D)</th></tr></thead>
+      <tbody id="topPagesBody"><tr><td colspan="5" class="empty">No publishing data yet.</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title">◷ LIVE ACTIVITY LOG</div>
+    <span class="badge b-blue" id="logCount">0 records</span>
+  </div>
+  <div class="card-sub">Latest executed tasks across all accounts</div>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>TIME</th><th>ACCOUNT</th><th>PAGE</th><th>ACTION</th><th>STATUS</th><th>MESSAGE</th></tr></thead>
+      <tbody id="logBody"><tr><td colspan="6" class="empty">No activity yet.</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadStats(){
+  const r = await api("GET","/api/dashboard/stats");
+  if(!r.ok) return;
+  const d = r.data;
+  el("stAccounts").textContent = d.accounts.total;
+  el("stLive").textContent = d.accounts.live;
+  el("stDead").textContent = d.accounts.dead;
+  el("stActions").textContent = d.actions_today;
+  el("stLifetime").textContent = d.lifetime_posts;
+  el("stProxies").textContent = d.proxies.total;
+  el("stProxActive").textContent = d.proxies.active;
+  el("stProxPct").textContent = d.proxies.pct + "%";
+  el("stPresets").textContent = d.presets;
+  el("stQueued").textContent = d.queued;
+  el("qBadge").textContent = d.queued + " queued";
+  el("opsSub").textContent = "Accounts: " + d.accounts.live + "/" + d.accounts.total +
+    " · Proxies: " + d.proxies.active + "/" + d.proxies.total + " · Queued: " + d.queued;
+}
+
+async function loadActivity(){
+  const r = await api("GET","/api/dashboard/activity");
+  if(!r.ok) return;
+  drawChart(r.data);
+}
+
+function drawChart(d){
+  const c = el("actChart"), ctx = c.getContext("2d");
+  const W = c.width = c.offsetWidth * 2, H = c.height = 440;
+  ctx.clearRect(0,0,W,H);
+  const max = Math.max(4, ...d.reels, ...d.posts);
+  const n = d.labels.length, bw = W/(n*3);
+  ctx.fillStyle = "#8b98b8"; ctx.font = "20px sans-serif";
+  for(let g=0; g<=4; g++){
+    const v = Math.round(max*g/4), y = H-50-(H-90)*g/4;
+    ctx.fillText(v, 8, y+6);
+    ctx.strokeStyle = "#16203a"; ctx.beginPath(); ctx.moveTo(50,y); ctx.lineTo(W-10,y); ctx.stroke();
+  }
+  for(let i=0;i<n;i++){
+    const x = 60 + i*(W-80)/n;
+    const hp = (H-90)*d.posts[i]/max, hr = (H-90)*d.reels[i]/max;
+    ctx.fillStyle = "#22c55e"; ctx.fillRect(x, H-50-hp, bw, hp);
+    ctx.fillStyle = "#22d3ee"; ctx.fillRect(x+bw+6, H-50-hr, bw, hr);
+    ctx.fillStyle = "#8b98b8";
+    ctx.save(); ctx.translate(x+bw, H-24); ctx.fillText(d.labels[i], -30, 0); ctx.restore();
+  }
+  // tooltip data
+  c._data = d;
+}
+
+async function loadLog(){
+  const r = await api("GET","/api/dashboard/log");
+  if(!r.ok) return;
+  el("logCount").textContent = r.data.length + " records";
+  const tb = el("logBody");
+  if(!r.data.length){ tb.innerHTML = '<tr><td colspan="6" class="empty">No activity yet.</td></tr>'; return; }
+  tb.innerHTML = r.data.map(x =>
+    "<tr><td class='muted'>"+esc(fmtDT(x.ts))+"</td><td>"+esc(x.account||"—")+"</td><td>"+esc(x.page||"—")+
+    "</td><td>"+esc(x.action)+"</td><td>"+statusBadge(x.status)+"</td><td class='muted'>"+esc(x.message||"")+"</td></tr>"
+  ).join("");
+}
+
+async function loadTopPages(){
+  const r = await api("GET","/api/dashboard/per-page");
+  if(!r.ok) return;
+  const tb = el("topPagesBody");
+  if(!r.data.length){ tb.innerHTML = '<tr><td colspan="5" class="empty">No publishing data yet.</td></tr>'; return; }
+  tb.innerHTML = r.data.map((x,i) =>
+    "<tr><td class='muted'>"+(i+1)+"</td><td>"+esc(x.name)+"</td><td><b>"+x.week+"</b></td><td class='muted'>"+x.total+"</td><td>"+
+    (x.failed_7d ? "<span class='bad'>"+x.failed_7d+"</span>" : "<span class='muted'>0</span>")+"</td></tr>"
+  ).join("");
+}
+
+loadStats(); loadActivity(); loadLog(); loadTopPages();
+setInterval(()=>{ loadStats(); loadLog(); }, 15000);
+</script>
+{% endblock %}

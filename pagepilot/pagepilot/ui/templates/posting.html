@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+.chip.on{background:var(--accent);color:#04121a;font-weight:700}
+</style>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">Reels Post Automation</div>
+      <span class="badge b-gray" id="builderStatus">IDLE</span>
+    </div>
+    <div class="card-sub">Select pages, configure, and queue a reel task</div>
+    <div class="field">
+      <label>Task name</label>
+      <input class="input" id="taskName" placeholder="e.g. Morning reels batch">
+    </div>
+    <div class="toolbar">
+      <input class="input" id="pq" placeholder="Search page name..." style="max-width:200px">
+      <select class="select" id="pCatFilter" style="max-width:170px">
+        <option value="">All Categories</option>
+      </select>
+    </div>
+    <div class="chiprow" style="margin-bottom:12px">
+      <button class="chip on" id="chipAll">All</button>
+      <button class="chip" id="chipLive">Live Only</button>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr>
+          <th><input type="checkbox" id="pSelAll"></th>
+          <th>STT</th><th>PAGE NAME</th><th>OWNING ACCOUNT</th><th>CATEGORY</th>
+        </tr></thead>
+        <tbody id="pPagesBody"></tbody>
+      </table>
+    </div>
+    <div class="toolbar" style="margin-top:12px;margin-bottom:0">
+      <span class="muted" id="pSelInfo">Selected: 0 of 0</span>
+      <div class="spacer"></div>
+      <button class="btn btn-green" id="startTaskBtn">▶ Start Task</button>
+    </div>
+  </div>
+
+  <div class="stat-col">
+    <div class="card">
+      <div class="card-head"><div class="card-title">⚙ TASK CONFIGURATION</div></div>
+      <div class="card-sub">Engine Rules</div>
+      <div class="card-title" style="font-size:12px;margin-bottom:10px">General Configuration</div>
+      <div class="row2">
+        <div class="field">
+          <label>Min spacing (sec)</label>
+          <input class="input" id="cfgMin" type="number" value="3" min="1">
+        </div>
+        <div class="field">
+          <label>Max spacing (sec)</label>
+          <input class="input" id="cfgMax" type="number" value="10" min="1">
+        </div>
+      </div>
+      <div class="field">
+        <label>Switch account on errors</label>
+        <input class="input" id="cfgSwitch" type="number" value="10" min="1">
+        <div class="card-sub" style="margin:6px 0 0">Switch to next account after N errors</div>
+      </div>
+      <div class="field" style="display:flex;align-items:center;gap:10px;margin-bottom:0">
+        <label class="switch"><input type="checkbox" id="cfgLoop"><span class="sl"></span></label>
+        <span>Repeat action when finished <span class="muted">(loop continuously)</span></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="card-title">Reel Video Configuration</div></div>
+      <div class="card-sub">Select video presets from library</div>
+      <div id="presetList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title">Tasks</div>
+    <button class="btn btn-sm btn-ghost" id="reloadTasks">⟳ Refresh</button>
+  </div>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr>
+        <th>ID</th><th>NAME</th><th>KIND</th><th>STATUS</th>
+        <th>QUEUED</th><th>DONE</th><th>FAILED</th><th>CREATED</th><th></th>
+      </tr></thead>
+      <tbody id="tasksBody"></tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/posting.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+.cat-row{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:10px 12px;border-radius:9px;color:var(--muted);cursor:pointer;
+  margin-bottom:2px;border:1px solid transparent}
+.cat-row:hover{background:#101a30;color:var(--text)}
+.cat-row.on{background:linear-gradient(90deg,#123,#0e1a30);color:var(--text);
+  border-color:#1e3a5f;box-shadow:inset 2px 0 0 var(--accent)}
+.cat-x{background:none;border:none;color:var(--faint);font-size:16px;cursor:pointer;padding:0 4px}
+.cat-x:hover{color:var(--red)}
+</style>
+<div class="grid-2" style="grid-template-columns:280px 1fr">
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">Page Categories</div>
+      <button class="btn btn-sm btn-primary" id="addCatBtn" title="Add category">＋</button>
+    </div>
+    <div class="card-sub">Organize Facebook pages</div>
+    <div id="catList"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title">Pages &amp; Groups</div>
+        <div class="card-sub">Fetched Pages and joined Groups for every logged-in account</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <input class="input" id="q" placeholder="Search pages..." style="max-width:220px">
+      <select class="select" id="accountFilter" style="max-width:200px">
+        <option value="">All accounts</option>
+      </select>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="fetchBtn">⇩ Fetch Now</button>
+      <button class="btn" id="addPageBtn">＋ Add Page</button>
+    </div>
+    <div class="tabs">
+      <button class="tab on" id="tabPages">Pages (<span id="pagesCount">0</span>)</button>
+      <button class="tab" id="tabGroups">Groups (0)</button>
+    </div>
+
+    <div id="pagesPane">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr>
+            <th><input type="checkbox" id="selAll"></th>
+            <th>STT</th><th>ACCOUNT</th><th>CATEGORY</th><th>PAGE</th><th>PAGE UID / SLUG</th>
+          </tr></thead>
+          <tbody id="pagesBody"></tbody>
+        </table>
+      </div>
+      <div class="toolbar" style="margin-top:12px;margin-bottom:0">
+        <span class="muted" id="footInfo">Total 0 · Selected 0</span>
+        <div class="spacer"></div>
+        <button class="btn btn-sm" id="chgCatBtn">Change Category</button>
+        <button class="btn btn-sm" id="copyUrlsBtn">Copy URLs</button>
+        <button class="btn btn-sm btn-danger" id="delBtn">Delete</button>
+      </div>
+    </div>
+
+    <div id="groupsPane" style="display:none">
+      <div class="empty">Groups fetch automation engine milestone me aayega.<br>
+      Joined groups yahan list honge jab engine ready hoga.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pages.js') }}"></script>
+{% endblock %}

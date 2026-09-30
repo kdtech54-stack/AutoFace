@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title|default('Dashboard') }} · PagePilot</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">P</div>
+      <div>
+        <div class="brand-name">PagePilot <span class="ver">v{{ app_version|default('0.1.0') }}</span></div>
+        <div class="brand-sub">FACEBOOK SUITE</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a class="nav-item {% if active_page=='dashboard' %}active{% endif %}" href="/dashboard"><span class="ni">▦</span> Dashboard</a>
+      <a class="nav-item {% if active_page=='accounts' %}active{% endif %}" href="/accounts"><span class="ni">◍</span> Accounts</a>
+      <a class="nav-item {% if active_page=='pages' %}active{% endif %}" href="/pages"><span class="ni">❏</span> Pages &amp; Groups</a>
+      <a class="nav-item {% if active_page=='presets' %}active{% endif %}" href="/presets"><span class="ni">◈</span> Content Presets</a>
+      <a class="nav-item {% if active_page=='proxies' %}active{% endif %}" href="/proxies"><span class="ni">⬡</span> Proxy Management</a>
+      <div class="nav-section">AUTOMATION</div>
+      <a class="nav-item {% if active_page=='posting' %}active{% endif %}" href="/posting"><span class="ni">⚡</span> Posting</a>
+      <a class="nav-item sub {% if active_page=='scheduler' %}active{% endif %}" href="/scheduler"><span class="ni">◷</span> Auto Page Scheduler</a>
+      <span class="nav-item sub disabled"><span class="ni">◍</span> Group Posting <span class="badge b-amber">UPCOMING</span></span>
+      <a class="nav-item sub {% if active_page=='engagement' %}active{% endif %}" href="/engagement"><span class="ni">✉</span> Comments &amp; Engagement</a>
+      <div class="nav-section">SYSTEM</div>
+      <a class="nav-item {% if active_page=='settings' %}active{% endif %}" href="/settings"><span class="ni">⚙</span> Settings</a>
+    </nav>
+    <div class="side-foot">
+      <div class="foot-label">ENGINE</div>
+      <div class="foot-status"><span class="dot dot-green"></span> Local · Ready</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1>{{ title|default('Dashboard') }}</h1>
+      <div class="topbar-right">
+        <div class="sched-pill">
+          <span class="dot dot-gray" id="schedDot"></span>
+          <span>AUTO SCHEDULER:&nbsp;<b id="schedState">IDLE</b></span>
+          <button class="btn btn-primary btn-sm" id="schedBtn">▶ Run</button>
+        </div>
+        <div class="lang">US&nbsp; English ▾</div>
+      </div>
+    </header>
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+<div id="modal-root"></div>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
